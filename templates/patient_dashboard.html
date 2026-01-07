@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-center mb-4">Patient Dashboard</h2>
+
+<div class="row g-4">
+
+  <!-- Appointment Form -->
+  <div class="col-md-4">
+    <div class="card shadow p-4">
+      <h4 class="mb-3 text-center">Book an Appointment</h4>
+
+      <form method="POST" action="{{ url_for('patient_dashboard') }}">
+        <div class="mb-3">
+          <label class="form-label">Select Doctor</label>
+          <select name="doctor_name" class="form-select" required>
+            {% for doctor in doctors %}
+              <option value="{{ doctor.username }}">{{ doctor.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Date</label>
+          <input type="date" name="date" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-control" required></textarea>
+        </div>
+
+        <button class="btn btn-success w-100">Book Appointment</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Appointment History -->
+  <div class="col-md-8">
+    <div class="card shadow p-4">
+      <h4 class="mb-3 text-center">Your Appointments</h4>
+
+      <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="table-primary">
+          <tr>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Chat</th> <!-- New column -->
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for appointment in appointments %}
+          <tr>
+            <td>{{ appointment.doctor_name }}</td>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.description }}</td>
+            <td>
+              {% if appointment.status == 'Pending' %}
+                <span class="badge bg-warning text-dark">Pending</span>
+              {% elif appointment.status == 'Approved' %}
+                <span class="badge bg-success">Approved</span>
+              {% else %}
+                <span class="badge bg-danger">Rejected</span>
+              {% endif %}
+            </td>
+
+            <!-- Chat button -->
+            <td>
+              {% if appointment.status == 'Approved' %}
+                <a href="{{ url_for('chat', appointment_id=appointment.id) }}" class="btn btn-success btn-sm">Chat</a>
+              {% else %}
+                <span class="text-muted">N/A</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

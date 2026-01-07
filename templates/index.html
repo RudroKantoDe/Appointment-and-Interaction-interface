@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="text-center py-5">
+  <h1 class="mb-3 fw-bold">🏥 Hospital Management System</h1>
+  <p class="lead mb-4">
+    A smart and simple solution to manage appointments, patients and doctors seamlessly.
+  </p>
+
+  <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 me-2">Login</a>
+  <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg px-4">Register</a>
+</div>
+
+{% endblock %}

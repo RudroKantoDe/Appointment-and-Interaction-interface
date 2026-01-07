@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4 text-center">Doctor Dashboard</h2>
+
+<div class="card shadow p-4">
+  <h4 class="mb-3">Appointment Requests</h4>
+
+  <table class="table table-bordered table-hover text-center align-middle">
+    <thead class="table-primary">
+      <tr>
+        <th>Patient</th>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Action</th>
+        <th>Chat</th> <!-- New column -->
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for appointment in appointments %}
+      <tr>
+        <td>{{ appointment.patient_name }}</td>
+        <td>{{ appointment.date }}</td>
+        <td>{{ appointment.description }}</td>
+        <td>
+          {% if appointment.status == 'Pending' %}
+            <span class="badge bg-warning text-dark">Pending</span>
+          {% elif appointment.status == 'Approved' %}
+            <span class="badge bg-success">Approved</span>
+          {% else %}
+            <span class="badge bg-danger">Rejected</span>
+          {% endif %}
+        </td>
+        
+        <!-- Approve/Reject buttons -->
+        <td>
+          {% if appointment.status == 'Pending' %}
+          <form method="POST" action="{{ url_for('doctor_dashboard') }}" class="d-inline">
+            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+            <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+          </form>
+
+          <form method="POST" action="{{ url_for('doctor_dashboard') }}" class="d-inline">
+            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+            <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+          </form>
+          {% else %}
+            <button class="btn btn-secondary btn-sm" disabled>No Action</button>
+          {% endif %}
+        </td>
+
+        <!-- Chat button -->
+        <td>
+          {% if appointment.status == 'Approved' %}
+          <a href="{{ url_for('chat', appointment_id=appointment.id) }}" class="btn btn-success btn-sm">Chat</a>
+          {% else %}
+          <span class="text-muted">N/A</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
